@@ -1,0 +1,6 @@
+{
+  "name": "MEGAPHONE MAJENANG",
+  "description": "Aplikasi e-commerce handphone & aksesoris Megaphone Majenang wilayah Cilacap dan sekitarnya dengan fitur COD, transfer, cash, notifikasi status dan integrasi WhatsApp real-time.",
+  "requestFramePermissions": ["notifications"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

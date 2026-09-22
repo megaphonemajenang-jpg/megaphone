@@ -1,0 +1,63 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        (request.auth.token.email == 'megaphonemajenang@gmail.com' && request.auth.token.email_verified == true)
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Products: Anyone can read, only admin can create/update/delete
+    match /products/{productId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin() && isValidId(productId);
+    }
+
+    // Banners: Anyone can read, only admin can create/update/delete
+    match /banners/{bannerId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin() && isValidId(bannerId);
+    }
+
+    // Store Settings: Anyone can read, only admin can write
+    match /storeSettings/{docId} {
+      allow read: if true;
+      allow write: if isAdmin() && isValidId(docId);
+    }
+
+    // Orders: Anyone can create an order, read their own order or admin can read & update status
+    match /orders/{orderId} {
+      allow read: if true;
+      allow create: if isValidId(orderId) &&
+        request.resource.data.invoiceNumber is string &&
+        request.resource.data.customerWhatsapp is string &&
+        request.resource.data.total is number;
+      allow update, delete: if isAdmin() && isValidId(orderId);
+    }
+
+    // Customers: Account info
+    match /customers/{customerId} {
+      allow read, write: if isValidId(customerId);
+    }
+
+    // Admins collection: only readable by admins
+    match /admins/{adminId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+  }
+}

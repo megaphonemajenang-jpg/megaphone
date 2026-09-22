@@ -1,0 +1,139 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Katalog produk handphone dan aksesoris Megaphone Majenang",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 200 },
+        "category": { "type": "string", "enum": ["handphone", "aksesoris"] },
+        "price": { "type": "number" },
+        "originalPrice": { "type": "number" },
+        "stock": { "type": "number" },
+        "image": { "type": "string", "maxLength": 2000000 },
+        "description": { "type": "string", "maxLength": 5000 },
+        "specs": { "type": "array" },
+        "createdAt": { "type": "string", "maxLength": 64 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "name", "category", "price", "stock", "createdAt"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Transaksi pesanan pembeli di Megaphone Majenang",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "invoiceNumber": { "type": "string", "maxLength": 64 },
+        "customerId": { "type": "string", "maxLength": 128 },
+        "customerName": { "type": "string", "maxLength": 128 },
+        "customerWhatsapp": { "type": "string", "maxLength": 32 },
+        "items": { "type": "array" },
+        "subtotal": { "type": "number" },
+        "deliveryFee": { "type": "number" },
+        "total": { "type": "number" },
+        "paymentMethod": { "type": "string", "enum": ["cod", "transfer", "cash"] },
+        "deliveryAddress": { "type": "object" },
+        "status": { "type": "string", "enum": ["menunggu_konfirmasi", "diproses", "dikirim", "selesai", "dibatalkan"] },
+        "notes": { "type": "string", "maxLength": 1000 },
+        "createdAt": { "type": "string", "maxLength": 64 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "invoiceNumber", "customerName", "customerWhatsapp", "items", "total", "paymentMethod", "status", "createdAt"]
+    },
+    "PromoBanner": {
+      "title": "PromoBanner",
+      "description": "Banner promo dan pengumuman diskon toko",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 200 },
+        "subtitle": { "type": "string", "maxLength": 300 },
+        "image": { "type": "string", "maxLength": 2000000 },
+        "link": { "type": "string", "maxLength": 500 },
+        "linkText": { "type": "string", "maxLength": 100 },
+        "active": { "type": "boolean" },
+        "createdAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "title", "image", "active", "createdAt"]
+    },
+    "StoreSettings": {
+      "title": "StoreSettings",
+      "description": "Pengaturan toko, alamat Majenang, WhatsApp dan rekening bank",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 200 },
+        "tagline": { "type": "string", "maxLength": 300 },
+        "whatsapp": { "type": "string", "maxLength": 32 },
+        "email": { "type": "string", "maxLength": 128 },
+        "address": { "type": "string", "maxLength": 500 },
+        "district": { "type": "string", "maxLength": 100 },
+        "city": { "type": "string", "maxLength": 100 },
+        "province": { "type": "string", "maxLength": 100 },
+        "postalCode": { "type": "string", "maxLength": 20 },
+        "mapsUrl": { "type": "string", "maxLength": 500 },
+        "openingHours": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "logo": { "type": "string", "maxLength": 2000000 },
+        "codAreas": { "type": "array" },
+        "codFee": { "type": "number" },
+        "enableCod": { "type": "boolean" },
+        "enableTransfer": { "type": "boolean" },
+        "enableCash": { "type": "boolean" },
+        "bankAccounts": { "type": "array" }
+      },
+      "required": ["name", "whatsapp", "address", "city", "codAreas", "codFee"]
+    },
+    "Customer": {
+      "title": "Customer",
+      "description": "Data akun pembeli untuk checkout dan riwayat pesanan",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 128 },
+        "whatsapp": { "type": "string", "maxLength": 32 },
+        "address": { "type": "object" },
+        "createdAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "name", "whatsapp", "createdAt"]
+    },
+    "AdminUser": {
+      "title": "AdminUser",
+      "description": "Data hak akses dan otentikasi admin Megaphone Majenang",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 128 },
+        "role": { "type": "string", "enum": ["admin"] }
+      },
+      "required": ["id", "email", "role"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Koleksi produk handphone & aksesoris"
+    },
+    "/orders/{orderId}": {
+      "schema": "Order",
+      "description": "Koleksi pesanan pelanggan"
+    },
+    "/banners/{bannerId}": {
+      "schema": "PromoBanner",
+      "description": "Koleksi banner promosi toko"
+    },
+    "/storeSettings/{docId}": {
+      "schema": "StoreSettings",
+      "description": "Dokumen pengaturan toko Megaphone Majenang"
+    },
+    "/customers/{customerId}": {
+      "schema": "Customer",
+      "description": "Koleksi akun pelanggan"
+    },
+    "/admins/{adminId}": {
+      "schema": "AdminUser",
+      "description": "Koleksi akun administrator"
+    }
+  }
+}
